@@ -60,8 +60,12 @@ WSGI_APPLICATION = 'wtp_admin.wsgi.application'
 # BASE DE DATOS (SQLite por defecto)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'wtpsa_db',  # Nombre de tu base de datos
+        'USER': 'wtpsa_db_user',   # Usuario proporcionado por Render
+        'PASSWORD': 'zA01reY8JTp4UZnCcTMj5WzZq9ACQKd6',  # Contraseña proporcionada por Render
+        'HOST': 'dpg-d3e8olqli9vc739eja0g-a',      # Host proporcionado por Render
+        'PORT': '5432',      # Puerto por defecto de PostgreSQL
     }
 }
 
