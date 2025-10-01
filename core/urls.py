@@ -47,3 +47,12 @@ urlpatterns = [
     path('productos/editar/<int:pk>/', productos_view, name='editar_producto'),
     path('productos/eliminar/<int:pk>/', eliminar_producto_view, name='eliminar_producto'),
 ]
+
+from django.contrib import admin
+from django.urls import path
+from django.contrib.auth import views as auth_views
+
+urlpatterns = [
+    path('', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('admin/', admin.site.urls),
+]
