@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4">
+  <h1 class="text-2xl font-bold mb-6">Gestión de Promociones</h1>
+
+  <div class="bg-white p-6 rounded shadow mb-8">
+    <h2 class="text-lg font-semibold mb-4">Registrar nueva promoción</h2>
+    <form action="{% url 'registrar_promocion' %}" method="POST" class="space-y-4">
+      {% csrf_token %}
+      {{ promo_form.non_field_errors }}
+      
+      <div>
+        {{ promo_form.nombre.label_tag }}
+        {{ promo_form.nombre }}
+        {{ promo_form.nombre.errors }}
+      </div>
+      <div>
+        {{ promo_form.telefono.label_tag }}
+        {{ promo_form.telefono }}
+        {{ promo_form.telefono.errors }}
+      </div>
+      <div>
+        {{ promo_form.cantidad_divisa.label_tag }}
+        {{ promo_form.cantidad_divisa }}
+        {{ promo_form.cantidad_divisa.errors }}
+      </div>
+      <div>
+        {{ promo_form.botellas_pagadas.label_tag }}
+        {{ promo_form.botellas_pagadas }}
+        {{ promo_form.botellas_pagadas.errors }}
+      </div>
+      
+      <button type="submit" name="registrar_promo"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        Registrar Promoción
+      </button>
+    </form>
+  </div>
+  
+  <h2 class="text-2xl font-bold mb-6">Promociones Pendientes</h2>
+
+  <div class="bg-white p-6 rounded shadow">
+    {% if promociones %}
+      <table class="min-w-full border divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left">Cliente</th>
+            <th class="px-4 py-2 text-left">Teléfono</th>
+            <th class="px-4 py-2 text-left">Botellas Pagadas</th>
+            <th class="px-4 py-2 text-left">Pendientes</th>
+            <th class="px-4 py-2 text-left">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for promo in promociones %}
+            <tr id="promo-{{ promo.id }}">
+              <td class="px-4 py-2">{{ promo.nombre }}</td>
+              <td class="px-4 py-2">{{ promo.telefono }}</td>
+              <td class="px-4 py-2">{{ promo.botellas_pagadas }}</td>
+              <td class="px-4 py-2 botellas-pendientes">{{ promo.botellas_pagadas|default:"0" }}</td>
+              <td class="px-4 py-2">
+                <button onclick="restarBotella('{{ promo.id|escapejs }}')"
+                  class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+                  Restar 1 botella
+                </button>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-gray-600">No hay promociones pendientes.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script src="{% static 'js/promos.js' %}"></script>
+{% endblock %}

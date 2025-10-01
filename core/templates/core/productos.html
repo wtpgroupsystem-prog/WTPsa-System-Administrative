@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Gestión de Productos</h1>
+    
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {% if producto_a_editar %}
+                            Editar Producto: {{ producto_a_editar.nombre }}
+                        {% else %}
+                            Crear Nuevo Producto
+                        {% endif %}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% if producto_a_editar %}{% url 'editar_producto' producto_a_editar.pk %}{% else %}{% url 'productos' %}{% endif %}">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block">Guardar Producto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Productos Registrados</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Precio ($)</th>
+                                    <th>Precio (Bs)</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for producto in productos %}
+                                <tr>
+                                    <td>{{ producto.codigo }}</td>
+                                    <td>{{ producto.nombre }}</td>
+                                    <td>${{ producto.precio_divisa|floatformat:2 }}</td>
+                                    <td>Bs. {{ producto.precio_bolivares|floatformat:2 }}</td>
+                                    <td>
+                                        <a href="{% url 'editar_producto' producto.pk %}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="post" action="{% url 'eliminar_producto' producto.pk %}" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-sm">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

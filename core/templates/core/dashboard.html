@@ -1,0 +1,117 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container mx-auto p-6">
+
+  <h1 class="text-2xl font-bold mb-4">Dashboard de la Planta Potabilizadora</h1>
+
+  <!-- Agua Disponible Chart -->
+  <div class="bg-white rounded-xl shadow p-4 mb-8">
+    <canvas id="aguaChart"
+            data-litros="{{ litros_disponibles }}"
+            data-litros-vendidos="{{ litros_vendidos }}">
+    </canvas>
+  </div>
+
+  <!-- Ventas Diarias Chart -->
+  <div class="bg-white rounded-xl shadow p-4 mb-8">
+    {{ ventas_dia_labels|json_script:"labels" }}
+    {{ ventas_dia_data|json_script:"values" }}
+    <canvas id="ventasChart"></canvas>
+  </div>
+
+  <!-- Información Resumen -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white shadow-lg rounded-lg p-4">
+      <h3 class="font-bold text-xl">Litros Disponibles</h3>
+      <p class="text-lg mt-4"><span id="litrosDisponibles">{{ litros_disponibles }}</span> L</p>
+    </div>
+    <div class="bg-white shadow-lg rounded-lg p-4">
+      <h3 class="font-bold text-xl">Ventas del Día</h3>
+      <p class="text-lg mt-4"><span id="ventasTotales">{{ ventas_totales }}</span> L</p>
+      <p class="text-lg">Total recaudado: <span id="totalRecaudado">{{ total_recaudado }}</span></p>
+    </div>
+  </div>
+
+  <!-- Totales por Método de Pago -->
+  <div class="bg-white shadow-lg rounded-lg p-4">
+    <h3 class="font-bold text-xl">Totales por Método de Pago (Litros)</h3>
+    <ul class="mt-4 space-y-2">
+      <li>Divisa: {{ total_divisa }} L</li>
+      <li>Bolívares (Efectivo, Pago Móvil, Transferencia): {{ total_bs }} L</li>
+      <li>Débito: {{ total_debito }} L</li>
+      <li>Crédito: {{ total_credito }} L</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Agua Disponible vs Vendida -->
+<canvas id="aguaChart"
+class="w-400 h-96"
+data-litros="{{ litros_disponibles }}"
+data-vendidos="{{ litros_vendidos }}">
+</canvas>
+<script>
+const aguaChartEl = document.getElementById('aguaChart');
+const litrosDisponibles = parseFloat(aguaChartEl.dataset.litros);
+const litrosVendidos = parseFloat(aguaChartEl.dataset.litrosVendidos);
+
+new Chart(aguaChartEl.getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Agua Disponible', 'Agua Vendida'],
+    datasets: [{
+      label: 'Distribución de Agua',
+      data: [litrosDisponibles, litrosVendidos],
+      backgroundColor: ['#36a2eb', '#ff6384'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    }
+  }
+});
+</script>
+
+<!-- Ventas Diarias -->
+<script>
+const ventasLabels = JSON.parse(document.getElementById('labels').textContent);
+const ventasData = JSON.parse(document.getElementById('values').textContent);
+
+const ventasChartEl = document.getElementById('ventasChart');
+
+new Chart(ventasChartEl.getContext('2d'), {
+  type: 'bubble',
+  data: {
+    labels: ventasLabels,
+    datasets: [{
+      label: 'Ventas Diarias (L)',
+      data: ventasData,
+      backgroundColor: '#4ade80',
+      borderColor: '#22c55e',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block title %}Control de Ventas{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">📊 Control de Ventas: Análisis Semanal, Mensual y Anual</h1>
+    <p class="mb-4">Filtra las ventas por rango de fecha para obtener estadísticas detalladas y gráficos comparativos.</p>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            Filtro de Rango
+        </div>
+        <div class="card-body">
+            <form id="filtro-ventas-form" method="GET" action="{% url 'control_manual' %}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label for="rango" class="form-label">Rango Predefinido:</label>
+                        <select class="form-select" id="rango" name="rango">
+                            <option value="semanal" {% if rango_seleccionado == 'semanal' %}selected{% endif %}>Últimos 7 Días</option>
+                            <option value="mensual" {% if rango_seleccionado == 'mensual' %}selected{% endif %}>Mes Actual</option>
+                            <option value="anual" {% if rango_seleccionado == 'anual' %}selected{% endif %}>Año Actual</option>
+                            <option value="personalizado" {% if rango_seleccionado == 'personalizado' %}selected{% endif %}>Personalizado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="fecha_inicio" class="form-label">Fecha de Inicio:</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" 
+                               value="{{ start_date_str }}" {% if rango_seleccionado != 'personalizado' %}disabled{% endif %}>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="fecha_fin" class="form-label">Fecha de Fin:</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" 
+                               value="{{ end_date_str }}" {% if rango_seleccionado != 'personalizado' %}disabled{% endif %}>
+                    </div>
+                    
+                    <div class="col-md-3 d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Resumen del Periodo ({{ start_date_str }} al {{ end_date_str }})</h4>
+                <a href="{% url 'exportar_ventas_a_excel' %}?rango={{ rango_seleccionado }}&fecha_inicio={{ start_date_str }}&fecha_fin={{ end_date_str }}" 
+                   class="btn btn-info" role="button">
+                    <i class="fas fa-file-excel"></i> Exportar a Excel (CSV)
+                </a>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card text-white bg-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Venta ($)</h5>
+                            <p class="card-text fs-3">${{ total_ventas_divisa|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-white bg-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Venta (Bs)</h5>
+                            <p class="card-text fs-3">Bs {{ total_ventas_bs|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-white bg-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">Litros de Agua Vendidos</h5>
+                            <p class="card-text fs-3">{{ litros_vendidos|floatformat:2 }} L</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    Evolución Diaria de Ventas (Divisa $)
+                </div>
+                <div class="card-body">
+                    <canvas id="ventasEvolucionChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white">
+                    Recaudación por Método de Pago
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <canvas id="pagosMetodoChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    Detalle de Recaudación
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Método de Pago</th>
+                                <th>Monto Recaudado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rec in recaudacion_por_metodo %}
+                            <tr>
+                                <td>{{ rec.metodo_pago__nombre }}</td>
+                                <td>{{ rec.total_monto|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2">No hay pagos registrados en este período.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script> 
+
+<script type="application/json" id="fechas-labels">{{ fechas_labels|safe }}</script>
+<script type="application/json" id="totales-data">{{ totales_data|safe }}</script>
+<script type="application/json" id="metodos-labels">{{ metodos_labels|safe }}</script>
+<script type="application/json" id="metodos-data">{{ metodos_data|safe }}</script>
+
+<script src="{% static 'js/control_manual.js' %}"></script>
+{% endblock %}

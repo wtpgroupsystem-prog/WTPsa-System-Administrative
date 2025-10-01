@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 400px; margin: auto; padding: 2rem;">
+    <h2 class="text-center mb-4">Iniciar Sesión</h2>
+
+    {% if form.errors %}
+        <div style="color: red;">
+            <strong>Error:</strong> Nombre de usuario o contraseña incorrectos.
+        </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_username">Usuario:</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password">Contraseña:</label>
+            {{ form.password }}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3">Ingresar</button>
+    </form>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'dashboard' %}">Ir al Dashboard</a> |
+        <a href="{% url 'ventas' %}">Ventas</a> |
+        <a href="{% url 'control_mensual' %}">Control Mensual</a> |
+        <a href="{% url 'control_anual' %}">Control Anual</a> |
+        <a href="{% url 'cisternas' %}">Cisternas</a> |
+        <a href="{% url 'deliveries' %}">Deliveries</a>
+    </div>
+</div>
+{% endblock %}

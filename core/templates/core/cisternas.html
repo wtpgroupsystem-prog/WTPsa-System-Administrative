@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>Registro de Cisternas</h2>
+
+ <!-- FORMULARIO PARA REGISTRAR CISTERNA -->
+<form method="POST" action="{% url 'cisternas' %}">
+    {% csrf_token %}
+    <label for="id_fecha">Fecha:</label>
+    {{ form.fecha }}
+
+    <label for="id_hora">Hora:</label>
+    {{ form.hora }}
+
+    <label for="id_volumen">Cantidad de litros:</label>
+    {{ form.volumen }}
+
+    <button type="submit">Registrar Cisterna</button>
+</form>
+
+    <!-- Buscador por fecha -->
+    <form method="get" action="{% url 'cisternas' %}">
+        <label>Buscar por fecha:</label>
+        <input type="date" name="fecha" value="{{ request.GET.fecha }}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <!-- Tabla de cisternas -->
+    <div class="tabla-cisternas mt-6">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Cantidad de litros</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cisterna in cisternas %}
+                <tr>
+                    <td>{{ cisterna.fecha }}</td>
+                    <td>{{ cisterna.hora }}</td>
+                    <td>{{ cisterna.volumen }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No hay registros disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{% static 'js/cisternas.js' %}"></script>
+{% endblock %}

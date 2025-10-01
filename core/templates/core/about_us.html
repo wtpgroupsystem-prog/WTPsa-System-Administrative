@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-blue-50 text-blue-950 p-4">
+    <div class="container mx-auto max-w-7xl">
+        
+        <!-- Contenedor Principal con Sombra de Diseño -->
+        <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 mb-12 shadow-blue-200">
+            
+            <!-- Sección de "Acerca de Nosotros" -->
+            <div class="text-center mb-12">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-6 tracking-tight">
+                    Acerca de Nosotros
+                </h1>
+                <p class="text-md sm:text-lg text-blue-800 leading-relaxed max-w-3xl mx-auto">
+                   Somos una plataforma integral diseñada para optimizar la gestión de tus ventas y operaciones, impulsando la eficiencia y el crecimiento de tu negocio. Nuestra misión es brindarte herramientas modernas, confiables y fáciles de usar, que te permitan organizar cada aspecto de tu gestión de manera práctica y sin complicaciones. Con nuestras soluciones intuitivas y adaptables, podrás centralizar tu información, automatizar procesos clave y acceder a reportes claros que facilitan la toma de decisiones estratégicas. Queremos que tengas el control total de tu negocio, para que dediques menos tiempo a las tareas operativas y más a lo que realmente importa: hacer crecer tu empresa y alcanzar nuevas oportunidades.
+                </p>
+            </div>
+
+            <!-- Sección de Folleto Digital -->
+            <div class="text-center mb-12">
+                <h2 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-6">
+                    Nuestro Folleto Digital
+                </h2>
+                <p class="text-md sm:text-lg text-blue-800 leading-relaxed max-w-2xl mx-auto mb-6">
+                    Explora más sobre nuestra propuesta en este folleto interactivo sobre nuestras funcionalidades.
+                </p>
+                <div class="w-full">
+                    <iframe 
+                        allowfullscreen="allowfullscreen" 
+                        allow="clipboard-write" 
+                        scrolling="no" 
+                        class="fp-iframe w-full rounded-2xl shadow-md transition-shadow duration-300 hover:shadow-lg" 
+                        src="https://heyzine.com/flip-book/d38273ce6a.html" 
+                        style="border: 1px solid #bfdbfe; height: 700px;"
+                    ></iframe>
+                </div>
+            </div>
+
+            <!-- Sección de Planes de Pago -->
+            <div class="text-center">
+                <h2 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-6">
+                    Nuestros Planes
+                </h2>
+                <div class="text-blue-700 text-sm mb-4 flex justify-center">
+
+                    <img 
+                        src="{% static 'images/planes_pago.png' %}" 
+                        alt="Imagen de los planes de pago"
+                        class="max-w-xs h-auto rounded-xl shadow-md transition-shadow duration-300 hover:shadow-lg"
+                    >
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

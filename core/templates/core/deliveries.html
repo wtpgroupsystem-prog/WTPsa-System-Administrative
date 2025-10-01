@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* Estilos personalizados para mejorar la apariencia */
+  .container {
+    max-width: 900px;
+  }
+  input[type="text"], input[type="number"], input[type="time"] {
+    transition: all 0.2s ease-in-out;
+  }
+  input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Sombra de enfoque */
+  }
+  .table-row-hover:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* Icono de papelera SVG */
+  .delete-icon {
+    width: 20px;
+    height: 20px;
+    fill: #ef4444;
+    transition: fill 0.2s ease-in-out;
+  }
+  .delete-btn:hover .delete-icon {
+    fill: #b91c1c;
+  }
+</style>
+
+<div class="container mx-auto px-4 py-8">
+  <!-- Sección de Registro de Deliveries -->
+  <div class="bg-white p-6 rounded-xl shadow-lg mb-8 border border-gray-200">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b-2 pb-2">Registrar Nuevo Delivery</h2>
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      
+      <!-- Renderiza el formulario con el formato de párrafos -->
+      <!-- Esto asegura que los nombres de los campos coincidan y el registro funcione -->
+      {{ form.as_p }}
+
+      <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300 transform hover:scale-105">
+        Registrar Delivery
+      </button>
+    </form>
+  </div>
+
+  <!-- Sección de Historial de Deliveries -->
+  <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b-2 pb-2">Historial de Deliveries</h3>
+    
+    <!-- Barra de búsqueda -->
+    <div class="mb-4">
+      <input type="text" id="searchDeliveries" placeholder="Buscar por nombre, dirección o encargado..." class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 text-gray-700">
+    </div>
+
+    <!-- Tabla de datos de deliveries -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left table-auto">
+        <thead>
+          <tr class="bg-blue-50 text-blue-800 uppercase text-sm leading-normal">
+            <th class="py-3 px-4 text-center">Fecha</th>
+            <th class="py-3 px-4">Cliente</th>
+            <th class="py-3 px-4">Cantidad</th>
+            <th class="py-3 px-4">Dirección</th>
+            <th class="py-3 px-4">Encargado</th>
+            <th class="py-3 px-4 text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-700 text-sm font-light">
+          {% for d in deliveries %}
+          <tr class="delivery-row border-b border-gray-200 table-row-hover">
+            <td class="py-3 px-4 text-center">{{ d.fecha|date:"d M, Y" }}</td>
+            <td class="py-3 px-4">{{ d.nombre_cliente }}</td>
+            <td class="py-3 px-4">{{ d.litros_entregados }} L</td>
+            <td class="py-3 px-4">{{ d.direccion }}</td>
+            <td class="py-3 px-4">{{ d.encargado.username }}</td>
+            <td class="py-3 px-4 text-center">
+              <button 
+                class="delete-btn text-red-600 hover:text-red-800 transition-colors duration-200"
+                data-delivery-id="{{ d.id }}"
+                title="Eliminar Delivery">
+                <!-- Icono de eliminación (papelera) en SVG -->
+                <svg class="delete-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M19 6H5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zM8 16c-.552 0-1-.447-1-1v-4c0-.553.448-1 1-1s1 .447 1 1v4c0 .553-.448 1-1 1zm4 0c-.552 0-1-.447-1-1v-4c0-.553.448-1 1-1s1 .447 1 1v4c0 .553-.448 1-1 1zm4 0c-.552 0-1-.447-1-1v-4c0-.553.448-1 1-1s1 .447 1 1v4c0 .553-.448 1-1 1z"></path>
+                  <path d="M20 4h-3V2c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v2h20V6c0-1.103-.897-2-2-2zm-5 0h-4V2h4v2z"></path>
+                </svg>
+              </button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="py-4 text-center text-gray-500">No hay deliveries registrados.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/deliveries.js' %}"></script>
+{% endblock %}
