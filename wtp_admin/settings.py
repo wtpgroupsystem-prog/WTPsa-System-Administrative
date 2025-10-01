@@ -24,6 +24,7 @@ INSTALLED_APPS = [
 # MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,7 +92,13 @@ USE_TZ = True
 
 # ARCHIVOS ESTÁTICOS
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'core' / 'static']
+STATICFILES_DIRS = [str(BASE_DIR / 'core' / 'static')]
+
+# Carpeta donde collectstatic copiará todos los archivos
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise para servir estáticos en producción
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # DEFAULT AUTO FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
