@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SEGURIDAD
 DEBUG = False
-ALLOWED_HOSTS = ['wtpsa-system-administrative.onrender.com', 'localhost']
+ALLOWED_HOSTS = ['wtpsa-system-administrative.onrender.com']
 
 # APLICACIONES INSTALADAS
 INSTALLED_APPS = [
