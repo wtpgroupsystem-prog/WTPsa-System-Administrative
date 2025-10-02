@@ -60,7 +60,7 @@ WSGI_APPLICATION = 'wtp_admin.wsgi.application'
 # BASE DE DATOS
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get("postgresql://wtpsa_db_user:zA01reY8JTp4UZnCcTMj5WzZq9ACQKd6@dpg-d3e8olqli9vc739eja0g-a/wtpsa_db"),  # Render proporciona esta variable
+        default=os.environ.get("DATABASE_URL"),  # Render proporciona esta variable
         conn_max_age=600,  # Mantiene conexiones abiertas
         ssl_require=True
     )
