@@ -5,3 +5,4 @@ tzdata==2025.2
 gunicorn==21.2.0
 psycopg2-binary
 whitenoise==6.5.0
+dj-database-url
