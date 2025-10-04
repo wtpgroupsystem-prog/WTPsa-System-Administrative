@@ -1,8 +1,12 @@
 asgiref==3.8.1
 Django==5.2
-psycopg2==2.9.10
+django-jazzmin==3.0.1
+psycopg2-binary==2.9.10
 sqlparse==0.5.3
 tzdata==2025.2
 whitenoise==6.11.0
 gunicorn==23.0.0
 dj-database-url==3.0.1
+PyMySQL==1.1.2
+typing_extensions==4.9.
+python-dotenv==1.1.1 
